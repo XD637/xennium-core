@@ -143,7 +143,7 @@ export default function Dashboard() {
               <>
                 <p className="text-xl font-semibold text-gray-800 flex items-center border p-2 rounded-md">
                   {showBalance ? wallet.balance : '****'}
-                  <span className="text-xs text-gray-400 ml-1">Xens</span>
+                  <span className="text-xs text-gray-400 ml-1">XENX</span>
                 </p>
                 <button
                   onClick={toggleBalanceVisibility}

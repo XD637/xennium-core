@@ -10,6 +10,9 @@ const Navbar = () => {
     setSidebarOpen(false);
   };
 
+  // Access the username from the session data
+  const username = session?.user?.username;
+
   return (
     <>
       <nav className="bg-zinc-950 p-4">
@@ -18,19 +21,21 @@ const Navbar = () => {
             <button onClick={() => setSidebarOpen(!sidebarOpen)} className="mr-4">
               <i className="bi bi-list text-white"></i>
             </button>
-            <Link href="/">Xenium</Link>
+            <Link href="/">Xennium</Link>
           </div>
           <div className="flex space-x-4">
             <Link href="/" className="text-white hover:translate-y-0.5 transition-transform">Home</Link>
             <Link href="/about" className="text-white hover:translate-y-0.5 transition-transform">About</Link>
             <Link href="/contact" className="text-white hover:translate-y-0.5 transition-transform">Contact</Link>
             {session ? (
-              <button 
-                onClick={() => signOut()} 
-                className="text-white hover:translate-y-0.25 transition-transform"
-              >
-                Logout
-              </button>
+              <>
+                <button 
+                  onClick={() => signOut()} 
+                  className="text-white hover:translate-y-0.25 transition-transform"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <Link href="/login" className="text-white hover:translate-y-0.5 transition-transform">Login</Link>
             )}
@@ -47,7 +52,7 @@ const Navbar = () => {
           <div className="p-4">
             <ul>
               <li className="mb-3 border-b border-gray-700">
-                <Link href="/profile" className="text-lg text-white" onClick={handleSidebarClose}>Profile</Link>
+                <Link href={`/profile/${username}`} className="text-lg text-white" onClick={handleSidebarClose}>Profile</Link>
               </li>
               <li className="mb-3 border-b border-gray-700">
                 <Link href="/dashboard" className="text-lg text-white" onClick={handleSidebarClose}>Dashboard</Link>

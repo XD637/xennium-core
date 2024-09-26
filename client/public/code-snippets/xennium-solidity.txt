@@ -1,0 +1,141 @@
+ //xennium.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+// Import ERC20 and Ownable contracts from the OpenZeppelin library
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+// Define the Xennium contract, which inherits from ERC20 and Ownable
+contract Xennium is ERC20, Ownable {
+
+    // Define a constant for the initial supply of tokens (1 million tokens with 18 decimal places)
+    uint256 public constant INITIAL_COINS = 1_000_000 * 10 ** 18; 
+
+    // Define a constant for the depreciation threshold (1 token with 18 decimal places)
+    uint256 public constant DEPRECIATION_THRESHOLD = 1 * 10 ** 18; 
+
+    // Mapping to track the amount of coins spent by each user
+    mapping(address => uint256) public spentCoins;
+
+    // Mapping to track the last time coins were spent by each user
+    mapping(address => uint256) public lastSpentTime;
+
+    // Mapping to track the true value of coins for each user
+    mapping(address => uint256) public trueValue;
+
+    // Constructor function that initializes the contract
+    constructor(address owner) ERC20("Xennium", "XENX") Ownable(owner) {
+        // Mint the initial supply of tokens to the specified owner
+        _mint(owner, INITIAL_COINS);
+        // Set the initial true value of the owner's coins to 100%
+        trueValue[owner] = 100; 
+    }
+
+    // Function to allow users to spend their coins
+    function spendCoins(uint256 amount) external {
+        // Ensure the user has more than the depreciation threshold before spending
+        require(balanceOf(msg.sender) > DEPRECIATION_THRESHOLD, "Cannot spend the last Xennium coin");
+        // Ensure the user has enough coins to spend
+        require(balanceOf(msg.sender) >= amount, "Not enough coins");
+
+        // Calculate the remaining coins after spending the specified amount
+        uint256 remainingCoins = balanceOf(msg.sender) - amount;
+        // Calculate the depreciation value based on the remaining coins
+        uint256 depreciation = calculateDepreciation(msg.sender, remainingCoins);
+        // Ensure depreciation is less than 100% before allowing the spend
+        require(depreciation < 100, "Cannot spend the last Xennium coin");
+
+        // Burn the specified amount of coins from the user's balance
+        _burn(msg.sender, amount);
+        // Track the amount of coins spent by the user
+        spentCoins[msg.sender] += amount;
+        // Update the last time coins were spent by the user
+        lastSpentTime[msg.sender] = block.timestamp;
+
+        // Update the true value of the user's coins after spending
+        trueValue[msg.sender] = depreciation; 
+    }
+
+    // Function to calculate the depreciation of the user's coins
+    function calculateDepreciation(address account, uint256 remainingCoins) public view returns (uint256) {
+        // If the remaining coins are less than or equal to the depreciation threshold, return 100% depreciation
+        if (remainingCoins <= DEPRECIATION_THRESHOLD) {
+            return 100; 
+        } else {
+            // Calculate the percentage of coins spent relative to the total coins (spent + remaining)
+            uint256 spentPercentage = (spentCoins[account] * 100) / (spentCoins[account] + remainingCoins);
+            uint256 depreciation = spentPercentage;
+            // Retrieve the current true value of the user's coins
+            uint256 currentTrueValue = trueValue[account];
+            // Return the updated true value after applying the depreciation
+            return currentTrueValue >= depreciation ? currentTrueValue - depreciation : 0;
+        }
+    }
+
+    // Function to allow users to receive coins
+    function receiveCoins(uint256 amount) external {
+        // Ensure the amount to receive is greater than zero
+        require(amount > 0, "Amount must be greater than zero");
+        // Mint the specified amount of tokens to the user's balance
+        _mint(msg.sender, amount);
+        // Reset the depreciation for the user after receiving new coins
+        resetDepreciation(msg.sender, amount);
+    }
+
+    // Function to reset the depreciation value when the user receives new coins
+    function resetDepreciation(address account, uint256 amount) public {
+        // Calculate the new total balance after receiving the coins
+        uint256 newTotal = balanceOf(account) + amount; 
+        // Calculate the new percentage of coins spent relative to the total balance
+        uint256 newSpentPercentage = (spentCoins[account] * 100) / newTotal;
+        // Set the true value of the user's coins to 100% minus the new spent percentage
+        trueValue[account] = 100 - newSpentPercentage;
+    }
+
+    // Override the transfer function to add a restriction based on the depreciation threshold
+    function transfer(address to, uint256 amount) public override returns (bool) {
+        // Ensure the user does not transfer coins if it would leave them below the depreciation threshold
+        if (balanceOf(msg.sender) - amount < DEPRECIATION_THRESHOLD) {
+            revert("Cannot transfer last Xennium coin");
+        }
+        // Call the original transfer function from the ERC20 contract
+        return super.transfer(to, amount);
+    }
+}
+  `;
+
+  const deploy=`
+//deploy.js
+const hre = require("hardhat"); // Import the Hardhat Runtime Environment (hre) module
+
+async function main() {
+  const [deployer] = await hre.ethers.getSigners(); // Get the first signer (deployer) from the list of available signers
+
+  const balance = await deployer.getBalance(); // Fetch the balance of the deployer
+  console.log("Deployer address:", deployer.address); // Print the deployer's address
+  console.log("Deployer balance:", hre.ethers.utils.formatEther(balance), "ETH"); // Print the deployer's balance in ETH
+
+  if (balance.eq(0)) {
+    console.error("Error: Deployer account has 0 ETH. Please add funds and try again."); // Error message if deployer has 0 ETH
+    return; // Exit the function if there's no balance
+  }
+
+  const gasPrice = await hre.ethers.provider.getGasPrice(); // Fetch the current gas price from the provider
+  console.log("Current gas price:", hre.ethers.utils.formatUnits(gasPrice, "gwei"), "gwei"); // Print the current gas price in gwei
+
+  // Deploy Xennium contract
+  const Xennium = await hre.ethers.getContractFactory("Xennium"); // Get the contract factory for the Xennium contract
+  const xennium = await Xennium.deploy(deployer.address); // Deploy the Xennium contract, passing the deployer's address as an argument
+
+  await xennium.deployed(); // Wait for the contract deployment to complete
+
+  console.log("Xennium deployed to:", xennium.address); // Print the address where the Xennium contract is deployed
+}
+
+main()
+  .then(() => process.exit(0)) // Exit the process successfully if the main function resolves
+  .catch((error) => {
+    console.error(error); // Print any errors that occur during execution
+    process.exit(1); // Exit the process with a failure code
+  });

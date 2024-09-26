@@ -20,6 +20,9 @@ contract XenniumFaucet is Ownable {
 
         hasClaimed[msg.sender] = true;
         xenniumToken.transfer(msg.sender, claimAmount);
+
+        // Reset depreciation after receiving tokens
+        xenniumToken.resetDepreciation(msg.sender, claimAmount);
     }
 
     function refillFaucet(uint256 amount) external onlyOwner {

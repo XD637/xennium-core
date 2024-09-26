@@ -1,0 +1,27 @@
+.quoteContainer {
+  position: relative;
+  margin: 10px auto;
+  padding: 10px 20px;
+  max-width: 500px;
+  background: none;
+  border-left: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.quoteText {
+  font-size: 0.8em;
+  line-height: 1.2;
+  font-style: italic;
+  color:black;
+  text-align: center;
+}
+
+.authorText {
+  margin-top: 5px;
+  font-size: 0.7em;
+  font-weight: 0;
+  color:black;
+  text-align: right;
+  font-family: 'Pacifico', cursive; /* Example of a crazy cursive font */
+}

@@ -2,32 +2,39 @@ import clientPromise from '../../lib/mongodb';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { userId, address } = req.body;
+    const { username, address } = req.body;
 
-    if (!userId || !address) {
-      return res.status(400).json({ message: 'User ID and address are required' });
+    if (!username || !address) {
+      return res.status(400).json({ message: 'Username and address are required' });
     }
 
     try {
       const client = await clientPromise;
-      const db = client.db('connect'); // Specify the database name
+      const db = client.db('test'); // Specify the database name
 
-      // Check if the address already exists
-      const existingAddress = await db.collection('address').findOne({ address });
+      const existingUser = await db.collection('address').findOne({ username });
 
-      if (!existingAddress) {
-        // Address does not exist, proceed to insert
-        await db.collection('address').insertOne({
-          userId, 
-          address 
-        });
-        return res.status(200).json({ message: 'Address saved successfully' });
+      if (existingUser) {
+        const addressExists = existingUser.addresses.includes(address);
+
+        if (!addressExists) {
+          await db.collection('address').updateOne(
+            { username },
+            { $addToSet: { addresses: address } }
+          );
+          return res.status(200).json({ message: 'Address saved successfully' });
+        } else {
+          return res.status(200).json({ message: 'Address already exists for this user' });
+        }
       } else {
-        return res.status(200).json({ message: 'Address already exists' });
+        await db.collection('address').insertOne({
+          username,
+          addresses: [address], // Initialize with the first address
+        });
+        return res.status(200).json({ message: 'User and address saved successfully' });
       }
     } catch (error) {
-      console.error('Error saving address:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);

@@ -73,7 +73,7 @@ const About = () => {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1 className="text-4xl font-extrabold mb-6 text-center text-black opacity-90">
       <Typewriter
-          words={['What is xennium?']}
+          words={['What is Xennium?']}
           loop={1}
           cursor
           cursorStyle='_'
@@ -104,7 +104,7 @@ const About = () => {
         <li className="mb-4 flex items-start p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 transition-all duration-300 text-white">
           <i className="bi bi-braces-asterisk mr-3 text-lg text-gray-400"></i>
           <span className="text-base text-gray-200">
-            Live Price Charts: Stay updated with real-time cryptocurrency price charts directly on our website.
+            Interact with our Xennium Faucet to claim oue Xennium tokens and intreact with the xennium-algorithm in real time.
           </span>
         </li>
         <li className="mb-4 flex items-start p-4 bg-gray-900 rounded-lg shadow-md hover:bg-gray-800 transition-all duration-300 text-white">
@@ -123,8 +123,8 @@ const About = () => {
       <div className="flex space-x-4 mt-6">
         <a href="#" className="text-gray-600 hover:text-gray-800"><FaInstagram size={24} /></a>
         <a href="#" className="text-gray-600 hover:text-gray-800"><FaTwitter size={24} /></a>
-        <a href="#" className="text-gray-600 hover:text-gray-800"><FaGithub size={24} /></a>
-        <a href="#" className="text-gray-600 hover:text-gray-800"><FaEnvelope size={24} /></a>
+        <a href="https://github.com/xennium" className="text-gray-600 hover:text-gray-800"><FaGithub size={24} /></a>
+        <a href="https://xenniumx@gmail.com" className="text-gray-600 hover:text-gray-800"><FaEnvelope size={24} /></a>
       </div>
       <ScrollToTopButton />
     </main>
