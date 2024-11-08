@@ -1,4 +1,4 @@
-// pages/index.js
+
 "use client"
 import React from 'react';
 import CodeSnippet from '../components/CodeSnippet';

@@ -36,7 +36,7 @@ const ScrollToTopButton = () => {
           onClick={scrollToTop}
           className="p-3 rounded-full bg-gray-900 text-white shadow-md hover:bg-gray-700 transition-all duration-300"
         >
-          <FaArrowUp size={24} />
+          <FaArrowUp size={20} />
         </button>
       )}
     </div>

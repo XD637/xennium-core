@@ -2,26 +2,41 @@
   position: relative;
   margin: 10px auto;
   padding: 10px 20px;
-  max-width: 500px;
-  background: none;
-  border-left: none;
-  box-shadow: none;
-  border-radius: 0;
+  max-width: 500px; /* Fixed container size */
+  background: linear-gradient(145deg, #2c2c2c, #1a1a1a); /* Glossy black gradient */
+  border-left: 4px solid #ffffff; /* Subtle white left border */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadows for depth */
+  border-radius: 8px; /* Slightly rounded corners */
+  backdrop-filter: blur(8px); /* Frosted-glass blur effect */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover transition */
+  word-wrap: break-word; /* Ensures text breaks onto new lines when necessary */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.quoteContainer:hover {
+  transform: translateY(-4px); /* Slight lift effect on hover */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2); /* More intense shadow on hover */
 }
 
 .quoteText {
-  font-size: 0.8em;
-  line-height: 1.2;
+  font-size: 0.9em; /* Smaller font size */
+  line-height: 1.4;
   font-style: italic;
-  color:black;
+  color: white; /* White text for contrast */
   text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Slight text shadow for readability */
+  display: block; /* Block display to ensure wrapping */
+  width: 100%; /* Ensure text can stretch to the full width */
+  white-space: normal; /* Allow text to wrap naturally */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .authorText {
-  margin-top: 5px;
-  font-size: 0.7em;
-  font-weight: 0;
-  color:black;
+  font-size: 0.8em; /* Slightly smaller font size for the author */
+  line-height: 1.4;
+  font-style: italic;
+  color: white; /* White text for the author's name */
   text-align: right;
-  font-family: 'Pacifico', cursive; /* Example of a crazy cursive font */
+  margin-top: 5px; /* Reduced space between quote and author */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* Slight text shadow for readability */
 }
